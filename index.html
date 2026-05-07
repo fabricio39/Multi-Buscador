@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Magnet Search Multi-Fonte</title>
+    <style>
+        body { font-family: sans-serif; background: #121212; color: #e0e0e0; padding: 15px; margin: 0; text-align: center; }
+        .box { background: #1e1e1e; padding: 20px; border-radius: 12px; border: 1px solid #ff9000; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        h2 { color: #ff9000; margin-bottom: 20px; font-size: 1.3rem; }
+        input { width: 100%; padding: 15px; border-radius: 8px; border: 1px solid #444; background: #2d2d2d; color: #fff; margin-bottom: 15px; outline: none; box-sizing: border-box; font-size: 16px; }
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .btn { padding: 15px; background: #ff9000; color: #000; font-weight: bold; border-radius: 8px; text-decoration: none; cursor: pointer; border: none; font-size: 0.9rem; }
+        .btn-full { grid-column: span 2; background: #00d4ff; }
+        .btn-assis { grid-column: span 2; background: #e91e63; color: white; } 
+
+        .work-area { margin-top: 25px; padding-top: 20px; border-top: 1px dashed #444; text-align: left; }
+        label { color: #ff9000; font-weight: bold; font-size: 0.9rem; }
+        textarea { width: 100%; height: 120px; background: #000; color: #00ff00; border: 1px solid #333; border-radius: 8px; padding: 10px; margin-top: 10px; font-family: monospace; font-size: 12px; box-sizing: border-box; }
+        .btn-sec { background: #333; color: #fff; margin-top: 10px; font-size: 0.8rem; padding: 10px; width: 100%; border-radius: 5px; border: none; }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>Multi-Buscador de Magnets</h2>
+    <input type="text" id="termo" placeholder="Filme ou Série...">
+    
+    <div class="btn-grid">
+        <button class="btn" onclick="buscar('tpb')">PIRATE BAY</button>
+        <button class="btn" onclick="buscar('1337x')">1337X</button>
+        <button class="btn" onclick="buscar('yts')">YTS (Filmes)</button>
+        <button class="btn" onclick="buscar('eztv')">EZTV (Séries)</button>
+        
+        <button class="btn btn-assis" onclick="buscar('ace')">BUSCAR NO ACE STREAM</button>
+        
+        <button class="btn btn-full" onclick="buscar('google')">BUSCA GLOBAL GOOGLE</button>
+    </div>
+
+    <div class="work-area">
+        <label>Área de Captura (Links para o seu JSON):</label>
+        <textarea id="rascunho" placeholder="Cole os links aqui..."></textarea>
+        <button class="btn-sec" onclick="document.getElementById('rascunho').value = ''">LIMPAR LISTA</button>
+        <button class="btn-sec" style="background: #28a745;" onclick="baixar()">SALVAR LISTA (.TXT)</button>
+    </div>
+</div>
+
+<script>
+    function buscar(tipo) {
+        const query = document.getElementById('termo').value;
+        if (!query) return alert("Digite o nome do filme!");
+
+        let url = "";
+        const qEnc = encodeURIComponent(query);
+
+        switch(tipo) {
+            case 'tpb': url = `https://tpb.party/search/${qEnc}/1/99/0`; break;
+            case '1337x': url = `https://1337x.to/search/${qEnc}/1/`; break;
+            // Ajustado link de busca do YTS
+            case 'yts': url = `https://yts.mx/browse-movies/${qEnc}/all/all/0/latest/0/all`; break;
+            case 'eztv': url = `https://eztv.re/search/${qEnc}`; break;
+            // Busca corrigida para Ace Stream
+            case 'ace': url = `https://www.google.com/search?q=${qEnc}+"acestream://"`; break;
+            case 'google': url = `https://www.google.com/search?q=${qEnc}+magnet+link+torrent`; break;
+        }
+        
+        window.location.href = url;
+    }
+
+    function baixar() {
+        const texto = document.getElementById('rascunho').value;
+        if(!texto) return alert("Nada para salvar!");
+        const blob = new Blob([texto], { type: "text/plain" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "lista_para_json.txt";
+        a.click();
+    }
+</script>
+
+</body>
+</html>
